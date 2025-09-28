@@ -10,7 +10,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type, X-API-Key");
 
-// ---- NUOVO: Logica di Gestione dello Stato Temporaneo ----
+// ---- Logica di Gestione dello Stato Temporaneo ----
 define('TEMPO_DI_VITA_STATO', 3600); // 3600 secondi
 
 // Controlla se esiste uno stato salvato e se non è scaduto
@@ -70,7 +70,7 @@ switch ($method) {
         }
         break;
 
-    case 'POST': // MODIFICATO: ora crea davvero l'aula
+    case 'POST': // Crea davvero l'aula
         $dati_inviati = json_decode(file_get_contents("php://input"), true);
         if (!empty($dati_inviati) && isset($dati_inviati['nome'])) {
             $nuovo_id = empty($aule) ? 1 : max(array_keys($aule)) + 1;
@@ -87,7 +87,7 @@ switch ($method) {
         }
         break;
 
-    case 'PUT': // MODIFICATO: ora aggiorna davvero l'aula
+    case 'PUT': // Aggiorna davvero l'aula
         if ($id && isset($aule[$id])) {
             $dati_inviati = json_decode(file_get_contents("php://input"), true);
             $aule[$id] = array_merge($aule[$id], $dati_inviati); // Permette aggiornamenti parziali
@@ -103,7 +103,7 @@ switch ($method) {
         }
         break;
 
-    case 'DELETE': // MODIFICATO: ora cancella davvero l'aula
+    case 'DELETE': // Cancella davvero l'aula
         if ($id && isset($aule[$id])) {
             unset($aule[$id]);
 
