@@ -1,4 +1,6 @@
 
+![Logo del Progetto](./cobiapi.png)
+
 # API Didattica per IIS Cobianchi
 
 Questo progetto è un server API RESTful a scopo didattico, progettato per gli studenti dell'IIS Cobianchi di Verbania. Lo scopo è fornire un ambiente di test realistico ma controllato per imparare a interagire con le API web tramite strumenti come Postman o chiamate JavaScript (Fetch API).
