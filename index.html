@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Didattica Cobianchi</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body class="w3-theme-l4">
+
+    <header class="w3-container w3-theme-d5 w3-padding-24">
+        <div class="w3-row">
+            <div class="w3-col" style="width:180px"><div class="logo-placeholder">  <img src="cobiapi.png" width="180">  </div></div>
+            <div class="rest">
+                <h1>API Didattica</h1>
+                <p class="w3-large">Un ambiente di test interattivo per dominare le API REST</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="w3-container w3-padding-32">
+        <div class="w3-card-4 w3-white w3-padding-large">
+
+            <h2>Benvenuti!</h2>
+            <p>State per interagire con un server che vi risponde tramite api via http, <strong> avete presente le <a href="https://swapi.dev/">Swapi</a> ? <br>Qui abbiamo una cosa simile ma fatta apposta per voi studenti del Cobianchi.</strong>. <br>Ecco le sue regole:</p>
+            <ul>
+                <li><strong>Le modifiche sono REALI</strong>: Quando create, aggiornate o cancellate un'aula, la state modificando davvero sul server.</li>
+                <li><strong>È CONDIVISA</strong>: Tutti vedono le stesse modifiche in tempo reale. Se un vostro compagno cancella un'aula, anche voi non la vedrete più.</li>
+                <li><strong>Ha una MEMORIA A BREVE TERMINE</strong>: La lavagna mantiene tutte le modifiche per <strong>1  ora</strong> dall'ultima operazione di scrittura (POST, PUT, DELETE). Ogni nuova modifica fa ripartire il timer!</li>
+                <li><strong>Si AUTO-RIPRISTINA</strong>: Se nessuno tocca la lavagna per più di 1 ora, si pulirà da sola, tornando allo stato iniziale. Perfetto per ricominciare da capo e avere sempre tutto funzionante!</li>
+            </ul>
+            <a href="simulator.html" class="w3-button w3-theme-action w3-margin-top w3-margin-bottom w3-large">
+                Vai subito al Simulatore Web &raquo;
+            </a>
+            <hr>
+
+            <h2>Concetti Fondamentali (da sapere!)</h2>
+            <p>Prima di iniziare, chiariamo alcuni termini. Immagina di essere al ristorante:</p>
+            <div class="w3-row-padding">
+                <div class="w3-half">
+                    <p><strong>API (Application Programming Interface)</strong><br>È il <strong>cameriere</strong>. Tu (il "client") non vai direttamente in cucina (il "server"), ma parli con il cameriere, che prende i tuoi ordini e ti porta i piatti.</p>
+                    <p><strong>Endpoint</strong><br>È una voce specifica del <strong>menù</strong>. <code>/aule</code> è l'endpoint per le aule, <code>/aule/3</code> è l'endpoint per l'aula con ID 3.</p>
+                    <p><strong>Metodi HTTP (I "Verbi")</strong><br>Sono le azioni che chiedi al cameriere di fare:
+                        <br>• <code>GET</code>: <strong>Leggi</strong>. "Mi fai vedere il menù delle aule?"
+                        <br>• <code>POST</code>: <strong>Crea</strong>. "Aggiungi una nuova aula al menù."
+                        <br>• <code>PUT</code>: <strong>Aggiorna</strong>. "Cambia il nome dell'aula 3."
+                        <br>• <code>DELETE</code>: <strong>Cancella</strong>. "Togli l'aula 3 dal menù."</p>
+                </div>
+                <div class="w3-half">
+                    <p><strong>HTTP Headers (Intestazioni)</strong><br>Sono le <strong>istruzioni speciali</strong> che dai al cameriere. Per esempio, "questa richiesta viene dal tavolo 5". Nel nostro caso, l'istruzione più importante è la chiave di autenticazione.</p>
+                    <p><strong>Body (Corpo della richiesta)</strong><br>È il <strong>dettaglio del tuo ordine</strong>, scritto su un foglietto. Quando crei (POST) o aggiorni (PUT) un'aula, scrivi i dettagli (nome, piano, ecc.) nel body, di solito in formato JSON.</p>
+                    <p><strong>Codici di Stato HTTP (La risposta del cameriere)</strong><br>
+                        • <code>2xx</code> (es. 200 OK, 201 Created): <strong>Successo!</strong> "Ordine ricevuto e preparato."
+                        <br>• <code>4xx</code> (es. 404 Not Found, 401 Unauthorized): <strong>Errore tuo!</strong> "Non abbiamo l'aula che cerchi" o "Non hai il permesso di ordinare."
+                        <br>• <code>5xx</code> (es. 500 Internal Server Error): <strong>Errore nostro!</strong> "La cucina è in fiamme, riprova più tardi!"</p>
+                </div>
+            </div>
+            <hr>
+
+            <h2>Guida Pratica all'API del Cobianchi</h2>
+
+            <h3>Passo 1: Autenticazione </h3>
+            <p>Ogni singola richiesta deve contenere un <strong>HTTP Header</strong> per dimostrare chi sei. Altrimenti, riceverai un errore <code>401 Unauthorized</code>.</p>
+            <ul>
+                <li>Nome dell'Header: <code>X-API-Key</code></li>
+                <li>Valore dell'Header: <code class="w3-codespan">COBIANCHI-SECRET-KEY-123</code></li>
+            </ul>
+
+            <h3>Passo 2: L'URL di Base </h3>
+            <p>Tutti gli endpoint partono da questo indirizzo:</p>
+            <pre class="code-block">https://www.ivanbertotto.it/o/apiserver/api</pre>
+
+            <h3>Passo 3: Gli Endpoints </h3>
+
+            <h4><span class="w3-tag w3-green w3-round">GET</span> /aule <span class="w3-text-grey">(con filtri!)</span></h4>
+            <p>Ottieni la lista delle aule. Puoi aggiungere dei filtri all'URL:</p>
+            <pre class="code-block" style="font-size: 1em;">.../api/aule?disponibile=true  -> solo le aule disponibili
+.../api/aule?piano=2        -> solo le aule al secondo piano</pre>
+
+            <h4><span class="w3-tag w3-green w3-round">GET</span> /aule/{id}</h4>
+            <p>Ottieni i dettagli di una singola aula. Esempio: <code>.../api/aule/1</code></p>
+
+            <h4><span class="w3-tag w3-orange w3-round">POST</span> /aule</h4>
+            <p>Crea una nuova aula. Devi inviare i dati nel <strong>Body</strong> della richiesta in formato JSON.</p>
+            <p><strong>Esempio di Body:</strong></p>
+            <pre class="code-block">{
+    "nome": "Laboratorio di Robotica",
+    "piano": 0,
+    "capienza": 18,
+    "disponibile": true
+}</pre>
+
+            <h4><span class="w3-tag w3-blue w3-round">PUT</span> /aule/{id}</h4>
+            <p>Aggiorna un'aula esistente. Invia solo i campi che vuoi modificare nel Body.</p>
+
+            <h4><span class="w3-tag w3-red w3-round">DELETE</span> /aule/{id}</h4>
+            <p>Elimina un'aula. Se l'operazione ha successo, riceverai un codice <code>204 No Content</code> (nessuna risposta nel body, ma tutto è andato bene).</p>
+            <hr>
+
+            <h2>Come Interagire con l'API</h2>
+
+            <h3>Opzione 1: Il nostro Simulatore Web</h3>
+            <p>Il modo più rapido per iniziare. È una pagina web che abbiamo creato per te, con tutti i campi già pronti. Clicca sul bottone in cima alla pagina!</p>
+
+            <h3>Opzione 2: Postman (Consigliato per i pro!)</h3>
+            <p>Postman è lo strumento che gli sviluppatori professionisti usano ogni giorno. Ti consigliamo di scaricarlo e imparare a usarlo. Ecco come fare la tua prima richiesta:</p>
+            <ol>
+                <li>Apri Postman e crea una nuova richiesta ("New Request").</li>
+                <li><strong>Seleziona il metodo</strong> (es. <code>GET</code>) e <strong>incolla l'URL</strong> completo (es. <code>https://www.ivanbertotto.it/o/apiserver/api/aule</code>).</li>
+                <li>Vai nella tab <strong>"Headers"</strong>.</li>
+                <li>Aggiungi una nuova riga: nella colonna KEY scrivi <code>X-API-Key</code> e in VALUE scrivi <code>COBIANCHI-SECRET-KEY-123</code>.</li>
+                <li>Premi <strong>"Send"</strong>. Dovresti vedere la lista delle aule nella parte bassa dello schermo!</li>
+                <li>Per le richieste <code>POST</code> o <code>PUT</code>, vai nella tab <strong>"Body"</strong>, seleziona <strong>"raw"</strong> e poi <strong>"JSON"</strong> dal menu a tendina. Lì potrai scrivere il corpo della tua richiesta.</li>
+            </ol>
+
+        </div>
+    </div>
+
+    <footer class="w3-container w3-theme-d5 w3-padding-16 w3-center">
+        <p>Progetto Didattico per IIS Cobianchi - Verbania by Ivan Bertotto</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulatore API - Cobianchi</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body class="w3-theme-l4">
+
+    <header class="w3-container w3-theme-d5 w3-padding-24">
+        <h1>Simulatore API "Postman-like"</h1>
+        <p><a href="index.html" style="color:white; text-decoration: underline;">&laquo; Torna alla Documentazione</a></p>
+    </header>
+
+    <div class="w3-container w3-padding-32">
+        <div class="w3-card-4 w3-white">
+            <div class="w3-container w3-padding">
+                <h2>Costruisci la tua Richiesta </h2>
+
+                <div class="w3-panel">
+                    <label for="apiKey"><strong>Header X-API-Key</strong> (Obbligatorio)</label>
+                    <input type="text" id="apiKey" class="w3-input w3-border" value="COBIANCHI-SECRET-KEY-123">
+                </div>
+
+                <div class="w3-row-padding">
+                    <div class="w3-third"><label>Metodo HTTP</label><select id="method" class="w3-select w3-border"><option value="GET">GET</option><option value="POST">POST</option><option value="PUT">PUT</option><option value="DELETE">DELETE</option></select></div>
+                    <div class="w3-twothird"><label>URL Endpoint Completo</label><input type="text" id="apiUrl" class="w3-input w3-border"></div>
+                </div>
+
+                <div class="w3-panel w3-margin-top">
+                    <label for="requestBody">Body della Richiesta (JSON, per POST/PUT)</label>
+                    <textarea id="requestBody" rows="7" class="w3-input w3-border" placeholder='{ "nome": "Aula Prova", "piano": 0 }'></textarea>
+                </div>
+
+                <button id="sendRequest" class="w3-button w3-theme-action w3-padding-large w3-round-large">Invia Richiesta</button>
+            </div>
+
+            <footer class="w3-container w3-light-grey w3-padding-24">
+                <h2>Risposta del Server:</h2>
+                <div id="statusCode" class="status-code"></div>
+                <div id="response-panel" class="w3-panel w3-padding">
+                    <pre id="response-output" class="code-block" style="background-color: white; color: #333;"></pre>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const apiUrlInput = document.getElementById('apiUrl');
+        const apiKeyInput = document.getElementById('apiKey');
+        const methodSelect = document.getElementById('method');
+        const requestBodyTextarea = document.getElementById('requestBody');
+        const sendRequestButton = document.getElementById('sendRequest');
+        const statusCodeDiv = document.getElementById('statusCode');
+        const responseOutput = document.getElementById('response-output');
+        const responsePanel = document.getElementById('response-panel');
+
+        apiUrlInput.value = 'https://www.ivanbertotto.it/o/apiserver/api/aule';
+
+        sendRequestButton.addEventListener('click', async () => {
+            const url = apiUrlInput.value;
+            const method = methodSelect.value;
+            const apiKey = apiKeyInput.value;
+            let body = requestBodyTextarea.value;
+
+            statusCodeDiv.textContent = 'In attesa...';
+            statusCodeDiv.className = 'status-code';
+            responseOutput.textContent = '';
+            responsePanel.className = 'w3-panel w3-padding';
+
+            const options = {
+                method: method,
+                headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey }
+            };
+
+            if ((method === 'POST' || method === 'PUT') && body.trim() !== '') {
+                try {
+                    JSON.parse(body);
+                    options.body = body;
+                } catch (e) {
+                    statusCodeDiv.textContent = 'Errore: Body JSON non valido!';
+                    statusCodeDiv.classList.add('error');
+                    responsePanel.classList.add('error');
+                    return;
+                }
+            }
+
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+
+                statusCodeDiv.textContent = `Status: ${response.status} ${response.statusText}`;
+                responseOutput.textContent = JSON.stringify(data, null, 2);
+
+                if (response.ok) {
+                    statusCodeDiv.classList.add('success');
+                    responsePanel.classList.add('success');
+                } else {
+                    statusCodeDiv.classList.add('error');
+                    responsePanel.classList.add('error');
+                }
+            } catch (error) {
+                statusCodeDiv.textContent = 'ERRORE DI RETE';
+                statusCodeDiv.classList.add('error');
+                responsePanel.classList.add('error');
+                responseOutput.textContent = `Impossibile contattare l'API.\n\n${error.message}`;
+            }
+        });
+    });
+    </script>
+</body>
+</html>
